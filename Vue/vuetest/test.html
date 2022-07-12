@@ -2,25 +2,48 @@
 <script src="https://unpkg.com/vue@3"></script>
 
 <head>
-    <body>
+
+<body>
     <div id="app">
-        <h1>
-            {{ 메시지 }}
-        </h1>
+        <component-a>
+        </component-a>
     </div>
-    </body>
+</body>
 </head>
 
 <script>
+    const ComponentA = {
+    }
+
+    const ComponentB = {
+    components: {
+        'component-a': ComponentA = {
+            data() {
+            return {
+                count: 0
+            }
+        },
+        template: `
+    <button v-on:click="count++">
+      You clicked me {{ count }} times.
+    </button>` 
+        }
+  }
+}
+
+    const ComponentC = {
+
+    }
+
     const app = Vue.createApp({
-        data () {
-            return {
-                메시지: '안녕하세요 인스턴스?'
-            }
+        components: {
+            'component-a': ComponentA,
+            'component-b': ComponentB,
+            'component-c': ComponentC
         }
     }).mount('#app')
 </script>
 
 <style>
-    
+
 </style>

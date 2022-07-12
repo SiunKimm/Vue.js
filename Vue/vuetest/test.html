@@ -5,20 +5,15 @@
 
 <body>
     <div id="app">
-        <component-a>
-        </component-a>
+        <component-a></component-a>
+        <component-b></component-b>
     </div>
 </body>
 </head>
 
 <script>
     const ComponentA = {
-    }
-
-    const ComponentB = {
-    components: {
-        'component-a': ComponentA = {
-            data() {
+        data() {
             return {
                 count: 0
             }
@@ -26,10 +21,14 @@
         template: `
     <button v-on:click="count++">
       You clicked me {{ count }} times.
-    </button>` 
-        }
+    </button>`
+    }
+
+    const ComponentB = {
+    components: {
+    'component-a': ComponentA
   }
-}
+    }
 
     const ComponentC = {
 

@@ -4,7 +4,7 @@
       <img :src="원룸[데이터].image" class="room-img">
       <h4>{{원룸[데이터].title}}</h4>
       <p>{{원룸[데이터].content}}</p>
-      <p>{{원룸[데이터].price}} 원</p>
+      <p>{{원룸[데이터].price}} 원d원</p>
       <DiscountRoom/>
       <!--
       <button @click="모달창 = false">닫기</button>

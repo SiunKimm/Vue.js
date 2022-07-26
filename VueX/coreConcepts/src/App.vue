@@ -1,35 +1,23 @@
 <template>
     <div>
-        <h1>Count: {{ count }}</h1>
-        <h1>Double: {{ double }}</h1>
-        <button @click="increase">increase</button>
-        <button @click="decrease">decrease</button>
+        <h1>This is an about page</h1>
+        {{ counter }}
+        {{ test.times2 }}
+        <button @click="inc">inc</button>
     </div>
 </template>
 
 <script>
-import { reactive, computed } from '@vue/composition-api';
+    import {computed} from "vue";
+    import {useStore} from "vuex";
+    export default {
+        setup() {
+            const store = useStore();
+            const counter = computed(() => store.state.counter);
+            const test = computed(() => store.getters);
+            const inc = () => store.commit("setCounter", counter.value + 1);
 
-const useCount = () => {
-    const count = ref(0);
-    const double = computed(() => count.value * 2);
-
-    const increase = () => ++state.count;
-    const decrease = () => --state.count;
-
-    return { count, double, increase, decrease }
-}
-
-export default {
-    setup () {
-        const { count, double, increase, decrease } = useCount();
-
-        return {
-            count,
-            double,
-            increase,
-            decrease
+            return {counter, inc, test};
         }
-    }
-}
+    };
 </script>

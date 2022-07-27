@@ -14,11 +14,13 @@ const routes = [
     { path: "/user/:name", name: "User", component: User },
     { path: "/user2/:name", name: "User2", component: User2, props: true },
     { path: "/:catchAll(.*)", name: "ErrorPage", component: ErrorPage },
+    { path: '/user', component: User, alias: ['/aa', '']}
 ]
 
 const router = createRouter({
     history: createWebHistory(),
-    routes: routes
+    routes: routes,
+    props: true
 });
 
 export default router;

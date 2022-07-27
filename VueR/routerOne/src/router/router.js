@@ -14,7 +14,7 @@ const routes = [
     { path: "/user/:name", name: "User", component: User },
     { path: "/user2/:name", name: "User2", component: User2, props: true },
     { path: "/:catchAll(.*)", name: "ErrorPage", component: ErrorPage },
-    { path: '/user', component: User, alias: ['/aa', '']}
+    // { path: '/user', component: User, alias: ['/aa', '']}
 ]
 
 const router = createRouter({

@@ -9,12 +9,12 @@ import User2 from "@/components/User2"
 
 const routes = [
     { path: "/", name: "Home", component: Home },
-    { path: "/about", name: "About", component: About },
+    { path: "/about", name: "About", component: About, redirect: { name: 'Names' }},
     { path: "/names", name: "Names", component: Names },
     { path: "/user/:name", name: "User", component: User },
     { path: "/user2/:name", name: "User2", component: User2, props: true },
     { path: "/:catchAll(.*)", name: "ErrorPage", component: ErrorPage },
-    // { path: '/user', component: User, alias: ['/aa', '']}
+    { path: '/names', component: Names, alias: ['/aa']}
 ]
 
 const router = createRouter({

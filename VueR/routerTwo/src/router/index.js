@@ -1,23 +1,24 @@
-import { createWebHistory, createRouter } from "vue-router";
-import PostList from "./views/Main.vue";
-import PostDetail from "./views/PostDetail.vue";
-
-const routes = [
-  {
-    path: "/",
-    name: "Post List",
-    component: Main,
-  },
-  {
-    path: "/:title",
-    name: "PostDetail",
-    component: PostDetail,
-  },
-];
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-});
+  routes: [
+    {
+      path: '/',
+      name: 'HomeV',
+      component: () => import('../views/HomeV')
+    },
+    {
+      path: '/user',
+      name: 'UsersV',
+      component: () => import('../views/UsersV'),
+      beforeEnter() {
+        alert('이 페이지를 볼 권한이 없습니다')
+        // block navigation
+        return false
+      }
+    }
+  ]
+})
 
-export default router;
+export default router

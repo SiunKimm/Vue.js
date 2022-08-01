@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue</title>
+    <!-- vue 3 -->
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/vue-router@3.5.3/dist/vue-router.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <todo-header></todo-header>
+    <todo-input></todo-input>
+    <todo-list></todo-list>
+</div>
+
+<script src="./todoHeader.js"></script>
+<script src="./todoInput.js"></script>
+<script src="./todoList.js"></script>
+
+<script>
+    var app = Vue.createApp({
+        components: {
+            'todo-header': TodoHeader,
+            'todo-input': TodoInput,
+            'todo-list' : TodoList
+        },
+        data() {
+            return {
+                cardMessage: "Hi"
+            }
+        },
+        methods: {
+            hello(){
+                alert('hi');
+            }
+        },
+    }).mount('#app')
+</script>
+
+<style>
+    #app{
+        width: 100%;
+        margin: 20px;
+    }
+</style>
+
+</body>
+</html>

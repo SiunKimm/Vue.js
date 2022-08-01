@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      todos: []
+      todos: ['8시 기상']
     }
   }
 }

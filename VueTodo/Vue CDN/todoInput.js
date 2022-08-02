@@ -15,8 +15,10 @@ const TodoInput = {
         console.log(this.newTodoItem);
         //저장하는 로직
 
-        localStorage.setItem(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}` , this.newTodoItem)
+        localStorage.setItem(this.newTodoItem, this.newTodoItem)
         this.newTodoItem=""; //비워주기(초기화)
       }
     }
   }
+
+  // `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}`

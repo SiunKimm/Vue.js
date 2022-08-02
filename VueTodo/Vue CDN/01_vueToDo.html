@@ -8,46 +8,74 @@
     <title>Vue</title>
     <!-- vue 3 -->
     <script src="https://unpkg.com/vue@3"></script>
-    <script src="https://unpkg.com/vue-router@3.5.3/dist/vue-router.js"></script>
+    <script src="https://unpkg.com/vue-router@4"></script>
 </head>
+
 <body>
 
-<div id="app">
-    <todo-header></todo-header>
-    <todo-input></todo-input>
-    <todo-list></todo-list>
-</div>
+    <div id="app">
+        <todo-header></todo-header>
+        <router-link to="/all-todo">all</router-link><br>
+        <router-link to="/all-done">done</router-link><br>
+        <router-link to="/all-undone">undone</router-link><br>
+        <router-view></router-view>
+        <todo-input></todo-input>
+        <todo-footer></todo-footer>
+    </div>
 
-<script src="./todoHeader.js"></script>
-<script src="./todoInput.js"></script>
-<script src="./todoList.js"></script>
+    <script src="./todoHeader.js"></script>
+    <script src="./todoInput.js"></script>
+    <script src="./allTodo.js"></script>
+    <script src="./allDone.js"></script>
+    <script src="./allUndone.js"></script>
+    <script src="./todoFooter.js"></script>
 
-<script>
-    var app = Vue.createApp({
-        components: {
-            'todo-header': TodoHeader,
-            'todo-input': TodoInput,
-            'todo-list' : TodoList
-        },
-        data() {
-            return {
-                cardMessage: "Hi"
-            }
-        },
-        methods: {
-            hello(){
-                alert('hi');
-            }
-        },
-    }).mount('#app')
-</script>
+    <script>
+        var app = Vue.createApp({
+            components: {
+                'todo-header': TodoHeader,
+                'todo-input': TodoInput,
+                'all-todo': AllTodo,
+                'all-done': AllDone,
+                'all-undone': AllUndone,
+                'todo-footer': TodoFooter
+            },
+            data() {
+                return {
+                    cardMessage: "Hi"
+                }
+            },
+            methods: {
+                hello() {
+                    alert('hi');
+                }
+            },
+        })
 
-<style>
-    #app{
-        width: 100%;
-        margin: 20px;
-    }
-</style>
+        // const All = { template: `<div>asdf</div>` }
+
+        const routes = [
+            { path: '/all-todo', component: AllTodo },
+            { path: '/all-done', component: AllDone },
+            { path: '/all-undone', component: AllUndone }
+        ]
+
+        const router = VueRouter.createRouter({
+            history: VueRouter.createWebHashHistory(),
+            routes,
+        })
+
+        app.use(router)
+        app.mount('#app')
+    </script>
+
+    <style>
+        #app {
+            width: 100%;
+            margin: 20px;
+        }
+    </style>
 
 </body>
+
 </html>

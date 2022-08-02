@@ -1,4 +1,4 @@
-const TodoList = {
+const AllTodo = {
   template:`
   <div>
     <ul>

@@ -2,7 +2,10 @@ const TodoInput = {
     template:`
     <div>
       <input type="text" v-model="newTodoItem" v-on:keyup.enter="addTodo">
-      <button v-on:click="addTodo">add</button>
+      <!-- <button v-on:click="addTodo">add</button> --!>
+      <span class="addContainer" v-on:click="addTodo">
+        <button><i aria-hidden="true">add</i></button>
+      </span>
   </div>
     `,
     data: function() {
@@ -12,13 +15,17 @@ const TodoInput = {
     },
     methods: {
       addTodo: function() {
-        console.log(this.newTodoItem);
-        //저장하는 로직
-
-        localStorage.setItem(this.newTodoItem, this.newTodoItem)
-        this.newTodoItem=""; //비워주기(초기화)
+        if (this.newTodoItem !== '') {
+          var obj = {id:`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}`, completed: false, item: this.newTodoItem};
+          //(텍스트,텍스트) 가 아닌 (텍스트, 불린) 을 저장
+          localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
+          this.clearInput();
+        }
+      },
+      clearInput: function() {
+        this.newTodoItem= ''; //비워주기(초기화)
       }
     }
   }
 
-  // `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}`
+  // const time = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}`

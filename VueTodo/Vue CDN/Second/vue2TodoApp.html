@@ -48,6 +48,9 @@
                 @click="filter = 'complete'">완료</button>
             <div class="remain">{{remain}}
                 개 미완료</div>
+            <button class="clearAllBtn" @click="list.splice(index)">
+                <i class="far fa-trash-alt">전체삭제</i>
+            </button>
         </div>
 
         <script>
@@ -91,7 +94,7 @@
                     },
                     done(work) {
                         work.complete = !work.complete;
-                    }
+                    },
                 },
 
                 watch: {

@@ -24,7 +24,7 @@ const TodoInput = {
       },
       clearInput: function() {
         this.newTodoItem= ''; //비워주기(초기화)
-      }
+      } 
     }
   }
 

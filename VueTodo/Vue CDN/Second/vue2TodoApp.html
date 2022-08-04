@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="kr">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Todo list</title>
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+            integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+            crossorigin="anonymous">
+        <script src="https://unpkg.com/vue@3"></script>
+    </head>
+
+    <body>
+        <h1 class="tdl">Todo list</h1>
+        <div class="app-list" id="app">
+            <form @submit.prevent="addWork">
+                <input v-model="inputWork" class="input-work">
+                <button class="add" type="submit">추가</button>
+            </form>
+            <ul>
+                <li v-for="(work, index ) in listFilter">
+                    <button @click="done(work)" class="work" v-bind:class="{check: work.complete}">
+                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i>
+                        {{work.attribute}}
+                    </button>
+                    <button class="delete" @click="list.splice(index, 1)">
+                        <i class="far fa-trash-alt">삭제</i>
+                    </button>
+                    <td>{{ work.create }}</td>
+                </li>
+            </ul>
+            <hr>
+            <button
+                class="filter"
+                :class="{filterActive: filter == 'all'}"
+                @click="filter = 'all' ">전체</button>
+            <button
+                class="filter"
+                :class="{filterActive: filter == 'undone'}"
+                @click="filter = 'undone'">미완료</button>
+            <button
+                class="filter"
+                :class="{filterActive: filter == 'complete'}"
+                @click="filter = 'complete'">완료</button>
+            <div class="remain">{{remain}}
+                개 미완료</div>
+        </div>
+
+        <script>
+
+            var STORAGE_KEY = 'vue-js-list-prhfisdo'
+            var listStorage = {
+                fetch() {
+                    var list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                    return list;
+                    console.log("test")
+                },
+                save(list) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+                    console.log("test2")
+                }
+            }
+
+            var app = Vue.createApp({
+
+                data() {
+                    return {inputWork: '', newId: 0, filter: 'all', list: listStorage.fetch()}
+                },
+
+                methods: {
+                    addWork() {
+                        if (this.inputWork) {
+                            let todate = new Date(+new Date() + 3240 * 10000)
+                                .toISOString()
+                                .replace("T", " ")
+                                .replace(/\..*/, '');
+                            this
+                                .list
+                                .push({
+                                    id: this.newId++,
+                                    attribute: this.inputWork,
+                                    complete: false,
+                                    create: todate
+                                });
+                        }
+                        this.inputWork = '';
+                    },
+                    done(work) {
+                        work.complete = !work.complete;
+                    }
+                },
+
+                watch: {
+                    list: {
+                        handler(list) {
+                            listStorage.save(list);
+                        },
+                        deep: true
+                    }
+                },
+
+                computed: {
+                    remain() {
+                        return this
+                            .list
+                            .filter(work => !work.complete)
+                            .length
+                    },
+                    listFilter() {
+                        if (this.filter == 'all') {
+                            return this.list
+                        } else if (this.filter == 'undone') {
+                            return this
+                                .list
+                                .filter(work => !work.complete)
+                        } else if (this.filter == 'complete') {
+                            return this
+                                .list
+                                .filter(work => work.complete)
+                        }
+                        return this.list
+                    }
+                }
+            })
+
+            app.mount('#app')
+        </script>
+    </body>
+
+</html>

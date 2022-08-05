@@ -30,6 +30,9 @@
                     <button class="delete" @click="list.splice(index, 1)">
                         <i class="far fa-trash-alt">삭제</i>
                     </button>
+                    <button class="delete">
+                        수정
+                    </button>
                     <td>{{ work.create }}</td>
                 </li>
             </ul>
@@ -67,7 +70,7 @@
                     console.log("test2")
                 }
             }
-
+            
             var app = Vue.createApp({
 
                 data() {

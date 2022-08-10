@@ -30,7 +30,7 @@
         <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete'">done</button>
         <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone'">undone</button>
         <form @submit.prevent="addWork">
-            <input v-model="inputWork" class="input-work" placeholder="Add a new task">
+            <input v-model="inputWork" class="input-work" placeholder="Add a new task~">
             <button class="add" type="submit">Add</button>
         </form>
         <ul>

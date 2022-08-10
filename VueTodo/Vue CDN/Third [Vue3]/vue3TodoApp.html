@@ -7,7 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vue3 Todo</title>
     <script src="https://unpkg.com/vue@3.2"></script>
-    <link rel="stylesheet" href="style.css">
 
     <style>
         .work {
@@ -27,12 +26,13 @@
 <body>
     <h1 class="tdl">To Do List</h1>
     <div class="app-list" id="app">
-        <button class="filter" :class="{filterActive: filter == 'all'}" @click="filter = 'all' ">all</button>
-        <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete'">done</button>
-        <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone'">undone</button>
+        <button class="filter" :class="{filterActive: filter == 'all'}" @click="filter = 'all' ">All</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete'">Done</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone'">Undone</button>&nbsp;
         <form @submit.prevent="addWork">
+            <br>
             <input v-model="inputWork" class="input-work" placeholder="Add a new task">
-            <button class="add" type="submit">Add</button>
+            &nbsp;<button class="add" type="submit">ADD</button>
         </form>
         <ul>
             <li v-for="(work, index ) in listFilter">
@@ -47,25 +47,25 @@
                 </div>
 
                 <button class="delete" @click="remove(index)">
-                    삭제
+                    🗑️
                 </button>
+                <button v-else class="edit" @click="startEdit(index)">
+                    ✏️
+                </button>   
 
                 <div v-if="work.isEdit">
                     <button class="edit" @click="completeEdit(index)">
-                        수정완료
+                        ✅
                     </button>
                     <button class="edit-cancel" @click="cancelEdit(index)">
-                        수정취소
+                        ❌
                     </button>
                 </div>
-
-                <button v-else class="edit" @click="startEdit(index)">
-                    수정
-                </button>
             </li>
         </ul>
         <hr>
-        <div class="remain">할일: {{remain}}개 남음</div>
+        <div class="remain">Todo: {{remain}}개 남음</div>
+        <br>
         <button class="allRemove" @click="allRemove(index),list.splice(index);">
             <i class="far fa-trash-alt">전체 삭제</i>
         </button>

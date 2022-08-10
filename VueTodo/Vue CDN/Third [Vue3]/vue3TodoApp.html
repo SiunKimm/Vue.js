@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vue3 Todo</title>
     <script src="https://unpkg.com/vue@3.2"></script>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <style>
         .work {
@@ -38,10 +40,10 @@
                 <template v-if="work.isEdit">
                     <input v-model="work.attribute" type="text">
                 </template>
-
                 <template v-else>
                     <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
-                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i> {{work.attribute}} </button>
+                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i> {{work.attribute}}
+                    </button>
                     <td>{{ work.create }}</td>
                 </template>
                 <button class="delete" @click="remove(index)">
@@ -58,11 +60,13 @@
                 <button v-else class="edit" @click="startEdit(index)">
                     수정
                 </button>
-                
             </li>
         </ul>
         <hr>
         <div class="remain">할일: {{remain}}개 남음</div>
+        <button class="allRemove" @click="allRemove(index),list.splice(index);">
+            <i class="far fa-trash-alt">전체삭제</i>
+        </button>
     </div>
 
     <script>
@@ -156,6 +160,11 @@
                     })
                 }
 
+                const allRemove = (index) => {
+                    localStorage.clear();
+                    id: newId.value = 0;
+                }
+
                 watch(() => list.value, (list) => {
                     listStorage.save(list);
                 })
@@ -173,6 +182,7 @@
                     startEdit,
                     cancelEdit,
                     completeEdit,
+                    allRemove,
                 }
             }
         }))

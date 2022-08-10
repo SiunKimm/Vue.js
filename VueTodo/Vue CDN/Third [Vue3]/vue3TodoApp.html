@@ -7,8 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vue3 Todo</title>
     <script src="https://unpkg.com/vue@3.2"></script>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
 
     <style>
         .work {
@@ -37,26 +36,29 @@
         </form>
         <ul>
             <li v-for="(work, index ) in listFilter">
-                <template v-if="work.isEdit">
+                <div v-if="work.isEdit">
                     <input v-model="work.attribute" type="text">
-                </template>
-                <template v-else>
+                </div>
+                <div v-else>
                     <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
-                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i> {{work.attribute}}
+                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i>{{work.attribute}}
                     </button>
                     <td>{{ work.create }}</td>
-                </template>
+                </div>
+
                 <button class="delete" @click="remove(index)">
                     삭제
                 </button>
-                <template v-if="work.isEdit">
+
+                <div v-if="work.isEdit">
                     <button class="edit" @click="completeEdit(index)">
-                        수정
+                        수정완료
                     </button>
                     <button class="edit-cancel" @click="cancelEdit(index)">
-                        취소
+                        수정취소
                     </button>
-                </template>
+                </div>
+
                 <button v-else class="edit" @click="startEdit(index)">
                     수정
                 </button>
@@ -65,7 +67,7 @@
         <hr>
         <div class="remain">할일: {{remain}}개 남음</div>
         <button class="allRemove" @click="allRemove(index),list.splice(index);">
-            <i class="far fa-trash-alt">전체삭제</i>
+            <i class="far fa-trash-alt">전체 삭제</i>
         </button>
     </div>
 
@@ -75,11 +77,11 @@
         var listStorage = {
             fetch() {
                 var list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-                console.log("test")
+                console.log("로컬스토리지 로드")
                 return list;
             },
             save(list) {
-                console.log("test2")
+                console.log("데이터 변경 감지")
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
             }
         }

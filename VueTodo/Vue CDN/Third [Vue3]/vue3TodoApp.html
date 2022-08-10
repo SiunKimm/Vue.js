@@ -27,8 +27,10 @@
     <h1 class="tdl">To Do List</h1>
     <div class="app-list" id="app">
         <button class="filter" :class="{filterActive: filter == 'all'}" @click="filter = 'all' ">All</button>&nbsp;
-        <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete'">Done</button>&nbsp;
-        <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone'">Undone</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'complete'}"
+            @click="filter = 'complete'">Done</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'undone'}"
+            @click="filter = 'undone'">Undone</button>&nbsp;
         <form @submit.prevent="addWork">
             <br>
             <input v-model="inputWork" class="input-work" placeholder="Add a new task">
@@ -51,7 +53,7 @@
                 </button>
                 <button v-else class="edit" @click="startEdit(index)">
                     ✏️
-                </button>   
+                </button>
 
                 <div v-if="work.isEdit">
                     <button class="edit" @click="completeEdit(index)">

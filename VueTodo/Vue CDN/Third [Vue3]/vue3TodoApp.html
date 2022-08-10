@@ -35,15 +35,30 @@
         </form>
         <ul>
             <li v-for="(work, index ) in listFilter">
-                <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
-                    <i class="fa fa-check " v-bind:class="{active: work.complete }"></i> {{work.attribute}} </button>
-                <td>{{ work.create }}</td>
+                <template v-if="work.isEdit">
+                    <input v-model="work.attribute" type="text">
+                </template>
+
+                <template v-else>
+                    <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
+                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i> {{work.attribute}} </button>
+                    <td>{{ work.create }}</td>
+                </template>
                 <button class="delete" @click="remove(index)">
                     삭제
                 </button>
-                <button class="edit">
+                <template v-if="work.isEdit">
+                    <button class="edit" @click="completeEdit(index)">
+                        수정
+                    </button>
+                    <button class="edit-cancel" @click="cancelEdit(index)">
+                        취소
+                    </button>
+                </template>
+                <button v-else class="edit" @click="startEdit(index)">
                     수정
                 </button>
+                
             </li>
         </ul>
         <hr>
@@ -114,6 +129,33 @@
                     list.value = list.value.filter((_, i) => i !== index)
                 }
 
+                const startEdit = (index) => {
+                    list.value = list.value.map((work, i) => {
+                        if (i === index) {
+                            work.isEdit = true
+                            work.orgAttribute = work.attribute
+                        }
+                        return work
+                    })
+                }
+
+                const cancelEdit = (index) => {
+                    list.value = list.value.map((work, i) => {
+                        if (i === index) {
+                            work.isEdit = false
+                            work.attribute = work.orgAttribute
+                        }
+                        return work
+                    })
+                }
+
+                const completeEdit = (index) => {
+                    list.value = list.value.map((work, i) => {
+                        if (i === index) work.isEdit = false
+                        return work
+                    })
+                }
+
                 watch(() => list.value, (list) => {
                     listStorage.save(list);
                 })
@@ -127,7 +169,10 @@
                     listFilter,
                     addWork,
                     done,
-                    remove
+                    remove,
+                    startEdit,
+                    cancelEdit,
+                    completeEdit,
                 }
             }
         }))

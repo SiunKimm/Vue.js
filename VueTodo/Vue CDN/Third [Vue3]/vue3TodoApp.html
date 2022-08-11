@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vue3 Todo</title>
+    <title>Vue3 To-do List</title>
     <script src="https://unpkg.com/vue@3.2"></script>
 
     <style>
@@ -27,26 +27,45 @@
     <h1 class="tdl">To Do List</h1>
     <div class="app-list" id="app">
         <button class="filter" :class="{filterActive: filter == 'all'}" @click="filter = 'all' ">All</button>&nbsp;
-        <button class="filter" :class="{filterActive: filter == 'complete'}"
-            @click="filter = 'complete'">Done</button>&nbsp;
-        <button class="filter" :class="{filterActive: filter == 'undone'}"
-            @click="filter = 'undone'">Undone</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete' ">Done</button>&nbsp;
+        <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone' ">Undone</button>&nbsp;
         <form @submit.prevent="addWork">
             <br>
-            <input v-model="inputWork" class="input-work" placeholder="Add a new task">
-            &nbsp;<button class="add" type="submit">ADD</button>
+            <div v-if="editingWork.isEdit == true">
+                <input v-model="editingWork.attribute" class="input-work">
+                &nbsp;<button class="edit" @click="completeEdit(editingWork.index)">
+                    ✅
+                </button>
+                <button class="edit-cancel" @click="cancelEdit(editingWork.index)">
+                    ❌
+                </button>
+            </div>
+            <div v-else>
+                <input v-model="inputWork" class="input-work" placeholder="Add a new task">
+                &nbsp;<button class="add" type="submit">ADD</button>
+            </div>
         </form>
         <ul>
             <li v-for="(work, index ) in listFilter">
+                <!-- 텍스트는 유지. -->
+                <div>
+                    <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
+                        <i class="fa fa-check " v-bind:class="{active: work.complete }"></i>{{work.attribute}}
+                    </button>
+                    <td>{{ work.create }}</td>
+                </div>
+
+                <!-- 기존 코드
                 <div v-if="work.isEdit">
                     <input v-model="work.attribute" type="text">
-                </div>
+                </div>				
                 <div v-else>
                     <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
                         <i class="fa fa-check " v-bind:class="{active: work.complete }"></i>{{work.attribute}}
                     </button>
                     <td>{{ work.create }}</td>
                 </div>
+				-->
 
                 <button class="delete" @click="remove(index)">
                     🗑️
@@ -55,14 +74,11 @@
                     ✏️
                 </button>
 
+                <!--
                 <div v-if="work.isEdit">
-                    <button class="edit" @click="completeEdit(index)">
-                        ✅
-                    </button>
-                    <button class="edit-cancel" @click="cancelEdit(index)">
-                        ❌
-                    </button>
+                    
                 </div>
+				-->
             </li>
         </ul>
         <hr>
@@ -88,10 +104,17 @@
             }
         }
 
-        const { createApp, computed, defineComponent, ref, watch } = Vue
+        const { createApp, computed, defineComponent, ref, reactive, watch } = Vue
 
         var app = createApp(defineComponent({
             setup() {
+                // 수정중인 index 변수를 생성합니다.
+                const editingWork = reactive({
+                    index: -1,
+                    isEdit: false,
+                    attribute: '',
+                })
+
                 const inputWork = ref('')
                 const newId = ref(0)
                 const filter = ref('all')
@@ -137,11 +160,18 @@
                     list.value = list.value.filter((_, i) => i !== index)
                 }
 
+                const setEditState = (index, work) => {
+                    editingWork.index = index
+                    editingWork.attribute = work.attribute
+                    editingWork.isEdit = work.isEdit
+                }
+
                 const startEdit = (index) => {
                     list.value = list.value.map((work, i) => {
                         if (i === index) {
                             work.isEdit = true
                             work.orgAttribute = work.attribute
+                            setEditState(index, work)
                         }
                         return work
                     })
@@ -152,6 +182,7 @@
                         if (i === index) {
                             work.isEdit = false
                             work.attribute = work.orgAttribute
+                            setEditState(index, work)
                         }
                         return work
                     })
@@ -159,7 +190,11 @@
 
                 const completeEdit = (index) => {
                     list.value = list.value.map((work, i) => {
-                        if (i === index) work.isEdit = false
+                        if (i === index) {
+                            work.isEdit = false
+                            work.attribute = editingWork.attribute
+                            setEditState(index, work)
+                        }
                         return work
                     })
                 }
@@ -174,6 +209,7 @@
                 })
 
                 return {
+                    editingWork,
                     inputWork,
                     newId,
                     filter,

@@ -26,11 +26,14 @@
 <body>
     <h1 class="tdl">To Do List</h1>
     <div class="app-list" id="app">
+        <!-- 필터를 통하여 전체, 완료, 미완료 데이터를 구분 -->
         <button class="filter" :class="{filterActive: filter == 'all'}" @click="filter = 'all' ">All</button>&nbsp;
         <button class="filter" :class="{filterActive: filter == 'complete'}" @click="filter = 'complete' ">Done</button>&nbsp;
         <button class="filter" :class="{filterActive: filter == 'undone'}" @click="filter = 'undone' ">Undone</button>&nbsp;
+        <!-- 폼의 기본적인 동작을 막기위한 modifier / 새로고침 방지 -->
         <form @submit.prevent="addWork">
             <br>
+            <!-- v-if 문을 통하여 editingWork.isEdit 이 true 가 되면 input v-model 이 변경되며 노출 -->
             <div v-if="editingWork.isEdit == true">
                 <input v-model="editingWork.attribute" class="input-work">
                 &nbsp;<button class="edit" @click="completeEdit(editingWork.index)">
@@ -40,18 +43,23 @@
                     ❌
                 </button>
             </div>
+            <!-- v-else 문을 통하여 v-if true 가 아닐시에 기본적으로 inputWork 노출 및 작동 -->
+            <!-- 데이터 입력 input box -->
             <div v-else>
                 <input v-model="inputWork" class="input-work" placeholder="Add a new task">
                 &nbsp;<button class="add" type="submit">ADD</button>
             </div>
         </form>
         <ul>
+            <!-- 텍스트는 유지 및 데이터 찾아내어 listFilter 값 반복 노출 -->
+            <!-- v-for="<요소> in <배열 또는 객체>" -->
             <li v-for="(work, index ) in listFilter">
-                <!-- 텍스트는 유지. -->
                 <div>
+                    <!-- 클릭한 index 가 done 메소드를 작동하여 complete 상태가 true 로 변경 -->
                     <button @click="done(index)" class="work" v-bind:class="{check: work.complete}">
                         <i class="fa fa-check " v-bind:class="{active: work.complete }"></i>{{work.attribute}}
                     </button>
+                    <!-- 등록 시간 -->
                     <td>{{ work.create }}</td>
                 </div>
 
@@ -66,10 +74,12 @@
                     <td>{{ work.create }}</td>
                 </div>
 				-->
-
+                
+                <!-- 클릭한 index 가 remove 메서드를 작동 -->
                 <button class="delete" @click="remove(index)">
                     🗑️
                 </button>
+                <!-- 클릭한 index 가 startEdit 메서드를 작동 -->
                 <button v-else class="edit" @click="startEdit(index)">
                     ✏️
                 </button>
@@ -82,45 +92,56 @@
             </li>
         </ul>
         <hr>
+        <!-- done 상태가 아닌 index 의 수량을 표시 -->
         <div class="remain">Todo: {{remain}}개 남음</div>
         <br>
+        <!-- 버튼을 누르면 allRemove 메서드를 작동하여 로컬 스토리지 데이터 삭제 & View 노출되는 데이터 splice 메서드로 삭제 -->
+        <!-- splice 메서드란? 배열의 기존 요소를 삭제 또는 교체하거나 새 요소를 추가하여 배열의 내용을 변경 -->
         <button class="allRemove" @click="allRemove(index),list.splice(index);">
             <i class="far fa-trash-alt">전체 삭제</i>
         </button>
     </div>
 
     <script>
-
+        
+        // 로컬 스토리지를 변수로 선언
         var STORAGE_KEY = 'vue3-todo-localStorage'
+        // 배열을 fetch 함수를 통해서 list 선언후 JSON 형식으로 localStorage.getItem 명령어를 통해서 가져온 이후 list 로 리턴
         var listStorage = {
             fetch() {
                 var list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
                 console.log("로컬스토리지 로드")
                 return list;
             },
+            // save 함수를 통해서 리턴받은 list 를 localStorage.setItem 명령어를 통해서 JSON 형식으로 저장
             save(list) {
                 console.log("데이터 변경 감지")
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
             }
         }
-
+        
+        
+        // Vue3 CDN 방식에서 import 를 사용하기 위하여 배열 구조의 const 상수들로 선언하여 각각의 기능이 작동하도록 import
         const { createApp, computed, defineComponent, ref, reactive, watch } = Vue
 
+        // createApp 을 통해서 Vue app 생성
         var app = createApp(defineComponent({
             setup() {
                 // 수정중인 index 변수를 생성합니다.
+                // editingWork : 수정중인 데이터의 index 변수 생성
                 const editingWork = reactive({
                     index: -1,
                     isEdit: false,
                     attribute: '',
                 })
 
-                const inputWork = ref('')
-                const newId = ref(0)
-                const filter = ref('all')
-                const list = ref(listStorage.fetch())
-                const remain = computed(() => list.value.filter(work => !work.complete).length)
-                const listFilter = computed(() => {
+                // ref : 뷰 템플릿의 DOM 또는 컴포넌트를 가리키는 속성 -> reactive reference 반응형 데이터를 의미로 변경
+                const inputWork = ref('') // 데이터 추가
+                const newId = ref(0) // 데이터의 ID
+                const filter = ref('all') // 데이터의 필터
+                const list = ref(listStorage.fetch()) // 데이터를 담아두는 배열
+                const remain = computed(() => list.value.filter(work => !work.complete).length) // work.complete 의 길이를 통해서 남은 할 일 갯수 표시
+                const listFilter = computed(() => { // computed 를 통해서 listFilter, if all, 그 외 조건에 따라서 undone / complete
                     if (filter.value == 'all') {
                         return list.value
                     } else if (filter.value == 'undone') {
@@ -128,19 +149,23 @@
                     } else if (filter.value == 'complete') {
                         return list.value.filter(work => work.complete)
                     }
-                    return list.value
+                    return list.value // 그 후 list 의 value 로 리턴
                 })
 
+                // Add 버튼을 누르면 작동하는 메서드, new Date 를 통해서 현재 시간을 todate 로 변수 선언
+                // list.value 의 concat / filter 같은 리스트 렌더링을 의미
+                // 각 데이터의 의미는 다음과 같음
                 const addWork = () => {
                     if (inputWork.value) {
                         let todate = new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
                         list.value = list.value.concat({
-                            id: newId.value++,
-                            attribute: inputWork.value,
-                            complete: false,
-                            create: todate
+                            id: newId.value++, // 새로운 데이터의 id 는 newId 의 value 가 순차적으로 증가
+                            attribute: inputWork.value, // 객체가 담고있는 내용
+                            complete: false, // 객체가 성공했는지 complete 조건을 true/false 조건을 통하여 분리
+                            create: todate // 생성 시간
                         });
                     }
+                    // input 하는 순간 box 안에 있는 데이터가 사라지게 함
                     inputWork.value = '';
                 }
 
@@ -148,6 +173,10 @@
                 //     work.complete = !work.complete;
                 // }
 
+                // list 를 변경할 때는 Vue2 와는 달리 list 전체를 새로운 list 로 대체
+                // done & remove 함수
+
+                // 객체의 index 주소값을 찾아서 complte 상태를 변경한 이후에 work 로 리턴
                 const done = (index) => {
                     // work.complete = !work.complete;
                     list.value = list.value.map((work, i) => {
@@ -156,16 +185,20 @@
                     })
                 }
 
+                // 객체의 index 주소값을 찾아서 filter 를 통해서 드러냄 -> 삭제
                 const remove = (index) => {
                     list.value = list.value.filter((_, i) => i !== index)
                 }
 
+                // 수정되고 있는 객체를 editingWork 라는 상태를 가지고 있는 index, attribute, isEdit 로 선언
+                // index 를 통하여 데이터가 선택되고, attribute 를 통하여 해당 데이터가 상단 인풋박스로, isEdit 를 통해 수정중인지 확인
                 const setEditState = (index, work) => {
                     editingWork.index = index
                     editingWork.attribute = work.attribute
                     editingWork.isEdit = work.isEdit
                 }
 
+                // 수정 버튼을 누르면 isEdit 가 true 로 변환하면서 현재 데이터가 -> 수정 박스 데이터로 -> 그 후에 setEditState 를 통하여 변경 작업 시작
                 const startEdit = (index) => {
                     list.value = list.value.map((work, i) => {
                         if (i === index) {
@@ -176,7 +209,8 @@
                         return work
                     })
                 }
-
+                
+                // isEdit 가 false 로 변환하고 아무일도 일어나지 않음, 아래 메서드와 차이점은 work.orgAttribute
                 const cancelEdit = (index) => {
                     list.value = list.value.map((work, i) => {
                         if (i === index) {
@@ -188,6 +222,7 @@
                     })
                 }
 
+                // 즉 현재 데이터인 work 가 아닌 edtingWork 의 데이터가 즉 work 데이터로 변환되면서 저장소에 저장됨
                 const completeEdit = (index) => {
                     list.value = list.value.map((work, i) => {
                         if (i === index) {
@@ -199,35 +234,41 @@
                     })
                 }
 
+                // 전체 삭제 버튼을 누르면 시작하는 메서드, 로컬스토리지를 클리어하고 newId 의 값을 0 으로 초기화
                 const allRemove = (index) => {
                     localStorage.clear();
                     id: newId.value = 0;
                 }
 
+                // watch 를 통하여 데이터가 실질적으로 변경되는지 확인
+                // Vue3 에서 기본적으로 Swallow 방식으로 구현, 리스트에 데이터가 추가되어도 변수의 메모리에 변경이 가해지지 않아서 watch 판단 불가
+                // deep 옵션을 통해서 데이터에 변화가 있었는지 확인
                 watch(() => list.value, (list) => {
                     listStorage.save(list);
-                })
+                } // deep: true, handler 와 deep 은 같은 depth
+                  // Vue2 에서 object 및 array 의 값 추적(observation) 불완전하여 Vue3 포맷으로 작성되며 deep 삭제
+                )
 
                 return {
-                    editingWork,
-                    inputWork,
-                    newId,
-                    filter,
-                    list,
-                    remain,
-                    listFilter,
-                    addWork,
-                    done,
-                    remove,
-                    startEdit,
-                    cancelEdit,
-                    completeEdit,
-                    allRemove,
+                    editingWork, // 수정중인 데이터
+                    inputWork, // 데이터 inputBox
+                    newId, // 데이터의 Id
+                    filter, // 데이터의 상태
+                    list, // 데이터가 담긴 배열
+                    remain, // 데이터의 상태에 따라서 갯수를 구분
+                    listFilter, // 데이터의 상태에 따라서 리스트를 구분
+                    addWork, // 데이터 삽입
+                    done, // 데이터의 상태, done
+                    remove, // 데이터 삭제
+                    startEdit, // 수정 시작과 View 변화
+                    cancelEdit, // 수정 취소
+                    completeEdit, // 수정 데이터 삽입
+                    allRemove, // 전체 데이터 삭제
                 }
             }
         }))
 
-        app.mount('#app')
+        app.mount('#app') // Vue3 app 연결
 
     </script>
 </body>
